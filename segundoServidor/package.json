@@ -1,0 +1,16 @@
+{
+  "name": "segundoservidor",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node --watch server.js",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "type":"module",
+  "dependencies": {
+    "fastify": "^5.8.4"
+  }
+}
