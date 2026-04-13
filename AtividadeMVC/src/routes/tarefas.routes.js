@@ -5,8 +5,11 @@ import {
   obterResumo,
   atualizarTarefa,
   concluirTarefa,
-  removerTarefa
+  removerTarefa,
+  listarPendentes
 } from "../controllers/tarefas.controller.js";
+
+
 
 // ATENÇÃO À ORDEM DAS ROTAS: Rotas estáticas (como /resumo) devem
 // vir antes de rotas com parâmetros dinâmicos (como /:id) para evitar
@@ -52,4 +55,10 @@ server.delete('/tarefas/:id', async (request, reply) => {
     console.log("Routes: DELETE /tarefas/:id chamada")
     removerTarefa(request, reply)
 })
+
+server.get('/tarefas/pendentes', async (request, reply) => {
+    console.log("Routes: GET /tarefas/pendentes chamada")
+    listarPendentes(request, reply)
+})
 }
+

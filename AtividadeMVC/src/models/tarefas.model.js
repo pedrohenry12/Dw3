@@ -70,3 +70,9 @@ export async function obterResumo() {
     const concluidas = tarefas.filter(t => t.concluido).length
     return { total, concluidas, pendentes: total - concluidas }
 }
+
+
+//PENDENTES
+export async function listarPendentes() {
+    return tarefas.filter(t => t.concluido === false)
+}

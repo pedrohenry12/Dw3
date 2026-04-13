@@ -1,4 +1,4 @@
-import { listar, criar, buscarPorId, atualizar, alternarConcluido, remover, obterResumo as obterResumoModel } from "../models/tarefas.model.js"
+import { listar, criar, buscarPorId, atualizar, alternarConcluido, remover, obterResumo as obterResumoModel, listarPendentes as listarPendentesModel } from "../models/tarefas.model.js"
 
 // GET /tarefas
 export async function listarTarefas(request, reply) {
@@ -72,4 +72,9 @@ export async function removerTarefa(request, reply) {
     }
 
     return reply.status(204).send()
+}
+
+export async function listarPendentes(request, reply) {
+    const tarefas = await listarPendentesModel()
+    return reply.send(tarefas)
 }
