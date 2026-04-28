@@ -28,4 +28,4 @@ a1.adicionarNota(8);
 a1.adicionarNota(7);
 a1.adicionarNota(7.5);
 
-a1.exibir(); // Ana | Média: 7.50 | Aprovado
+a1.exibir()
