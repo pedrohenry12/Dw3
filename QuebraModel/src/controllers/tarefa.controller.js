@@ -1,4 +1,4 @@
-// @file: src/controllers/tarefa.controller.js
+
 
 class TarefaController {
   constructor(service) {      // ← recebe o service de fora
@@ -69,6 +69,12 @@ class TarefaController {
     console.log("Controller: obterResumo chamado")
     const resumo = await this.service.obterResumo()
     return reply.send(resumo)
+  }
+//novo endpoint
+  async listarPendentes(request, reply){
+    console.log("Controller: obterPendentes chamado")
+    const pendentes = await this.service.listarPendentes()
+    return reply.send(pendentes)
   }
 }
 

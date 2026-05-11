@@ -31,6 +31,12 @@ class TarefaService {
     return novaTarefa
   }
 
+  //novo endpoint
+   async listarPendentes() {
+  console.log("Service: listarPendentes chamado")
+  return this.repository.listarPendentes()
+}
+
   async buscarPorId(id) {
     console.log("Service: buscarPorId chamado")
     return this.repository.buscarPorId(id)
@@ -61,10 +67,7 @@ class TarefaService {
     const pendentes = total - concluidas
     return { total, concluidas, pendentes }
   }
- //novo endpoint
-   async listarPendentes() {
-    return this.tarefas.filter(t => !t.concluido)
-  }
+ 
 }
 
 export default TarefaService

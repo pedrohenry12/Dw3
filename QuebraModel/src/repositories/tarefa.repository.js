@@ -1,4 +1,4 @@
-// @file: src/repositories/tarefa.repository.js
+
 
 class TarefaRepository {
   constructor() {
@@ -13,6 +13,10 @@ class TarefaRepository {
     console.log("Repository: buscarTodos chamado")
     return this.tarefas
   }
+  //novo endpoint
+  async listarPendentes() {
+  return this.tarefas.filter(t => !t.concluido)
+}
 
   async buscarPorId(id) {
     console.log("Repository: buscarPorId chamado")
@@ -45,9 +49,7 @@ class TarefaRepository {
     return true
   }
 
-   async listarPendentes() {
-    return this.tarefas.filter(t => !t.concluido)
-  }
+   
 }
 
 export default TarefaRepository
