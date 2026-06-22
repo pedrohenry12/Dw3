@@ -13,16 +13,14 @@ export class TarefaController {
 
   async buscar(request, reply) {
     const { id } = request.params
-    // Se não encontrar, o Service lança o erro e o código para aqui.
-    // Se passar para a linha de baixo, temos garantia que a tarefa existe.
     const tarefa = await this.service.buscarPorId(id)
     return reply.send(tarefa)
   }
 
   async criar(request, reply) {
-  const tarefa = await this.service.criarTarefa(request.body)
-  return reply.status(201).send(tarefa)
-}
+    const tarefa = await this.service.criarTarefa(request.body)
+    return reply.status(201).send(tarefa)
+  }
 
   async atualizar(request, reply) {
     const { id } = request.params

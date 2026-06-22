@@ -6,9 +6,19 @@ export class TarefaService {
     this.repository = repository
   }
 
+  async buscarPorId(id) {
+    const tarefa = await this.repository.buscarPorId(id)
+
+    if (!tarefa) {
+      throw new AppError('Tarefa não encontrada', 404)
+    }
+
+    return tarefa
+  }
+
   async listarTarefas(filtros = {}) {
     const tarefas = await this.repository.listarTodos()
-    
+
     let resultado = tarefas
 
     if (filtros.busca) {
@@ -24,41 +34,32 @@ export class TarefaService {
     return resultado
   }
 
-  async salvar(tarefa) {
-  const concluido = tarefa.status === 'concluida'
-
-  const resultado = await pool.query(
-    `
-      INSERT INTO tarefas (descricao, concluido, projeto_id)
-      VALUES ($1, $2, $3)
-      RETURNING id
-    `,
-    [tarefa.titulo, concluido, tarefa.projetoId]
-  )
-
-  return this.buscarPorId(resultado.rows[0].id)
-}
   async criarTarefa(dados) {
-  if (!dados.titulo || dados.titulo.trim() === '') {
-    throw new AppError('O título é obrigatório', 400)
+    if (!dados.titulo || dados.titulo.trim() === '') {
+      throw new AppError('O título é obrigatório', 400)
+    }
+
+    const tarefas = await this.repository.listarTodos()
+
+    const tituloJaExiste = tarefas.some(t =>
+      t.titulo.toLowerCase() === dados.titulo.toLowerCase().trim()
+    )
+
+    if (tituloJaExiste) {
+      throw new AppError('Já existe uma tarefa com esse título', 400)
+    }
+
+    const criada = await this.repository.salvar({
+      titulo: dados.titulo,
+      status: 'pendente',
+      projetoId: dados.projetoId ?? null
+    })
+
+    return this.buscarPorId(criada.id)
   }
-
-  const tarefas = await this.repository.listarTodos()
-  const tituloJaExiste = tarefas.some(t => t.titulo.toLowerCase() === dados.titulo.toLowerCase().trim())
-
-  if (tituloJaExiste) {
-    throw new AppError('Já existe uma tarefa com esse título', 400)
-  }
-
-  return this.repository.salvar({
-    titulo: dados.titulo,
-    status: 'pendente',
-    projetoId: dados.projetoId ?? null
-  })
-}
 
   async atualizarTarefa(id, dados) {
-    const tarefa = await this.buscarPorId(id) // Se não achar, o método acima já lança o AppError 404
+    const tarefa = await this.buscarPorId(id)
 
     if (tarefa.status === 'concluida') {
       throw new AppError('Não é possível atualizar uma tarefa já concluída', 400)
@@ -70,7 +71,9 @@ export class TarefaService {
   async concluirTarefa(id) {
     const tarefa = await this.buscarPorId(id)
 
-    const novoStatus = tarefa.status === 'concluida' ? 'pendente' : 'concluida'
+    const novoStatus =
+      tarefa.status === 'concluida' ? 'pendente' : 'concluida'
+
     return this.repository.atualizar(id, { status: novoStatus })
   }
 
