@@ -1,0 +1,8 @@
+Exercício 1
+O ORM entra depois do SQL puro porque só faz sentido usar essa abstração quando você já entende o que ela está fazendo por baixo. Aprendendo SQL primeiro, você sabe o que o Drizzle está gerando, consegue identificar erros e entende as relações do banco. Se aprendesse o ORM antes, ficaria dependente da ferramenta sem saber o que ela realmente executa.
+
+Exercício 4
+Legibilidade: o Drizzle é mais parecido com código JS comum. O SQL puro fica numa string separada da lógica.
+Controle: o SQL puro dá controle total sobre a query exata. O Drizzle abstrai isso, o que é bom para casos simples, mas limita em consultas mais específicas.
+Volume de código: nesse exemplo simples é parecido. Em queries maiores, com mais campos ou filtros, o Drizzle tende a exigir menos código repetido.
+Proximidade com o banco: o SQL puro é a linguagem direta do banco. O Drizzle traduz JS para SQL, então tem uma camada a mais no meio.
