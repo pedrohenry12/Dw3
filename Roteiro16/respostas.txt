@@ -1,0 +1,92 @@
+Exercício 1
+A tarefa.projetoId não possui notNull e unique pois em outas etapas do desenvolvimentos algumas terefas foram criadas antes da existencia de projetos, o que acarretaria em um problema caso fosse obrigatório inserir um projeto_id em todas as tarefas, já no segundo caso, realmente é inviável deixar um detalhe sem um projeto_id, não faz sentido. O unique não faz sentido pois um projeto pode ter mais de uma tarefa, utilizar o unique quebra o 1:n nesse caso, diferente da relação projeto-descricao onde um projeto só pode ter uma descrição e uma descrição só pode ter um projeto.
+
+Exercício 2
+Nesse caso, o que falta é  linha "criadoEm", que deveria ser escrita: criadoEm: timestamp('criado_em').notNull().defaultNow(),
+uma leitura bem sucedida não ecessariamente identifica que tudo está correto, depende de uma conferência entre o script e o bd, pois caso um .unique() seja esquecido, por exemplo, a leitura não acusa erro.
+
+Exercício 3
+1) Sim, pode. Pois se trata de um relacionamento n:n.
+2) Pois graças a criação da FK composta (id_tarefa e id_tag) uma nova relação desse tipo geraria um erro.
+3) Perderiamos a 2;3, pois geraria uma repetição.
+
+Exercício 4
+Não mudaria no bd, alterações no script não surtem efeito no banco, também não acusaria erro ou seria possivel identificar apenas roando o script, nesse caso a melhor forma é fazer uma verificação comparando o código e o banco.
+
+Exercício 5
+
+CREATE TABLE detalhes_projeto (
+  id SERIAL PRIMARY KEY,
+  projeto_id INTEGER UNIQUE NOT NULL REFERENCES projetos (id),
+  descricao_longa TEXT,
+  observacoes TEXT,
+  prazo_final DATE
+);
+
+export const detalhesProjeto = pgTable('detalhes_projeto', {
+  id: serial('id').primaryKey(),
+  projetoId: integer('projeto_id').notNull().unique().references(() => projetos.id),
+  descricaoLonga: text('descricao_longa'),
+  observacoes: text('observacoes'),
+  prazoFinal: date('prazo_final'),
+})
+
+IDSERIAL PK - id: serial('id').primaryKey() - Chave primária, identificador de um detalhamento.
+
+projeto_id INTEGER UNIQUE NOT NULL - projetoId: integer('projeto_id').notNull().unique().references(() => projetos.id) - Coluna obrigatória, única, com chave estrangeira do projeto id.
+
+descricao_longa TEXT - descricaoLonga: text('descricao_longa') - Coluna tipo texto para a descrição propriamente dita.
+
+observacoes TEXT - observacoes: text('observacoes') - Coluna para observação.
+
+prazo_final DATE - prazoFinal: date('prazo_final') - Coluna para a data de entrega, formatada com tipo date (sem hora).
+
+obs: as ultimas 3 podem ser NULL.
+
+
+Projetos:
+┌─────────┬────┬───────────────────────────────┬──────────────────────────┐
+│ (index) │ id │ nome                          │ criadoEm                 │
+├─────────┼────┼───────────────────────────────┼──────────────────────────┤
+│ 0       │ 1  │ 'Projeto API DW3'             │ 2026-06-17T14:00:58.449Z │
+│ 1       │ 2  │ 'Projeto Banco Relacional'    │ 2026-06-17T14:00:58.449Z │
+│ 2       │ 3  │ 'Projeto Integração Frontend' │ 2026-06-17T14:00:58.449Z │
+└─────────┴────┴───────────────────────────────┴──────────────────────────┘
+Tarefas:
+┌─────────┬────┬────────────────────────────────────┬───────────┬──────────────────────────┬───────────┐
+│ (index) │ id │ descricao                          │ concluido │ criadaEm                 │ projetoId │
+├─────────┼────┼────────────────────────────────────┼───────────┼──────────────────────────┼───────────┤
+│ 0       │ 1  │ 'Criar endpoints do projeto'       │ false     │ 2026-06-17T14:00:58.630Z │ 1         │
+│ 1       │ 2  │ 'Integrar PostgreSQL'              │ false     │ 2026-06-17T14:00:58.630Z │ 1         │
+│ 2       │ 3  │ 'Refatorar Repository'             │ false     │ 2026-06-17T14:00:58.630Z │ 2         │
+│ 3       │ 4  │ 'Modelar relacionamentos N:N'      │ false     │ 2026-06-17T14:00:58.630Z │ 2         │
+│ 4       │ 5  │ 'Ajustar resposta da API'          │ true      │ 2026-06-17T14:00:58.630Z │ 3         │
+│ 5       │ 6  │ 'Laboratório Drizzle — Roteiro 15' │ false     │ 2026-09-05T00:51:49.253Z │ null      │
+└─────────┴────┴────────────────────────────────────┴───────────┴──────────────────────────┴───────────┘
+Detalhes dos projetos:
+┌─────────┬────┬───────────┬────────────────────────────────────────────────┬───────────────────────────────────────┬──────────────┐
+│ (index) │ id │ projetoId │ descricaoLonga                                 │ observacoes                           │ prazoFinal   │
+├─────────┼────┼───────────┼────────────────────────────────────────────────┼───────────────────────────────────────┼──────────────┤
+│ 0       │ 1  │ 1         │ 'Projeto focado na evolução da API de tarefas' │ 'Organizar endpoints e persistência'  │ '2026-07-10' │
+│ 1       │ 3  │ 2         │ 'Projeto shape em 30 dias'                     │ 'Fibrar o abdomen pra apavorar geral' │ '2026-07-21' │
+└─────────┴────┴───────────┴────────────────────────────────────────────────┴───────────────────────────────────────┴──────────────┘
+Tags:
+┌─────────┬────┬───────────────┐
+│ (index) │ id │ nome          │
+├─────────┼────┼───────────────┤
+│ 0       │ 1  │ 'backend'     │
+│ 1       │ 2  │ 'postgres'    │
+│ 2       │ 3  │ 'api'         │
+│ 3       │ 4  │ 'arquitetura' │
+│ 4       │ 5  │ 'urgente'     │
+└─────────┴────┴───────────────┘
+Associações entre tarefas e tags:
+┌─────────┬──────────┬───────┐
+│ (index) │ tarefaId │ tagId │
+├─────────┼──────────┼───────┤
+│ 0       │ 1        │ 1     │
+│ 1       │ 1        │ 2     │
+│ 2       │ 1        │ 3     │
+│ 3       │ 2        │ 1     │
+│ 4       │ 2        │ 4     │
+└─────────┴──────────┴───────┘
