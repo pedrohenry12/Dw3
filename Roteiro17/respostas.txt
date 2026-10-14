@@ -1,0 +1,5 @@
+Exercício 1: Os CREATE TABLE ficaram comentados porque as tabelas já tinham sido criadas anteriormente, e executar os comandos novamente causaria conflito. O migrate apenas registrou essa etapa, sem recriar as tabelas. No Roteiro 15, o Drizzle foi usado apenas para definir tabelas e realizar consultas, sem gerar migrations.
+
+Exercício 2: Depois do generate e antes do migrate, a coluna prioridade existe apenas no schema.js e no arquivo SQL gerado, mas ainda não foi adicionada ao banco de dados PostgreSQL.
+
+Exercício 3: Não executo o migrate. Primeiro verifico se o schema.js está correto, se o caminho no drizzle.config.js está configurado corretamente e comparo com a baseline gerada pelo pull. Depois de corrigir as diferenças, posso executar o migrate.
